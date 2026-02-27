@@ -15,5 +15,5 @@ export class User {
   role: 'admin' | 'user' | 'guest';
 
   @Column()
-  active: 'true' | 'false'; 
+  active: boolean; 
 }

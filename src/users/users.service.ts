@@ -21,12 +21,12 @@ export class UsersService {
         return this.usersRepository.findOneBy({ id });
     }
 
-    create(user: {name: string, email: string, role: "admin" | "user" | "guest", active: "true" | "false"}) {
+    create(user: {name: string, email: string, role: "admin" | "user" | "guest", active: boolean}) {
         const newUser = this.usersRepository.create(user);
         return this.usersRepository.save(newUser);
     }
 
-    async update(id: number, userUpdate: {name?: string, email?: string, role?: "admin" | "user" | "guest", active?: "true" | "false"}) {
+    async update(id: number, userUpdate: {name?: string, email?: string, role?: "admin" | "user" | "guest", active?: boolean}) {
         const user = await this.findOne(id);
         if (user) {
             Object.assign(user, userUpdate);
