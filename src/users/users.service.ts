@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { User } from './users.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
+import { CreateUserDto } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -21,8 +23,9 @@ export class UsersService {
         return this.usersRepository.findOneBy({ id });
     }
 
-    create(user: {name: string, email: string, role: "admin" | "user" | "guest", active: boolean}) {
-        const newUser = this.usersRepository.create(user);
+    async create(createUserDto: CreateUserDto) {
+        const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+        const newUser = this.usersRepository.create({...createUserDto, password: hashedPassword});
         return this.usersRepository.save(newUser);
     }
 
@@ -42,41 +45,7 @@ export class UsersService {
         }
     }
 
+    async findByEmail(email: string) {
+        return this.usersRepository.findOne({ where: { email } });
+    }
 }
-    
-    
-    /*findAll(role?: "admin" | "user" | "guest") {
-        let filteredUsers = this.users;
-        if (role) {
-            filteredUsers = filteredUsers.filter(user => user.role === role);
-        }
-        
-        return filteredUsers;
-    }
-
-    findOne(id: number) {
-        return this.users.find(user => user.id === id);
-    }
-
-    create(user: {name: string, email: string, role: "admin" | "user" | "guest", active: "true" | "false"}) {
-        const newUser = { id: this.users.length + 1, ...user };
-        this.users.push(newUser);
-        return newUser;
-    }
-
-    update(id: number, userUpdate: {name?: string, email?: string, role?: "admin" | "user" | "guest", active?: "true" | "false"}) {
-        const user = this.findOne(id);
-        if (user) {
-            Object.assign(user, userUpdate);
-            return user;
-        }
-    }
-
-    delete(id: number) {
-    const removedUser = this.findOne(id);
-    if (removedUser) {
-        this.users = this.users.filter(user => user.id !== id);
-        return removedUser;
-    }
-
-}*/

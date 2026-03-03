@@ -12,4 +12,7 @@ export class CreateUserDto {
 
   @ApiProperty()
   active: boolean;
+
+  @ApiProperty()
+  password: string;
 }
