@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/users.entity';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { UserGroup } from './user-group/user-group.entity';
 
 @Module({
   imports: [ 
@@ -17,7 +18,7 @@ import { AuthModule } from './auth/auth.module';
       database: process.env.DATABASE_NAME || 'myapp',
       autoLoadEntities: true,
       synchronize: true,
-      entities: [User],
+      entities: [User, UserGroup],
     }),
     UsersModule, AuthModule,
   ],

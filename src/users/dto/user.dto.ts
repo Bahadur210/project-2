@@ -15,4 +15,7 @@ export class CreateUserDto {
 
   @ApiProperty()
   password: string;
+
+  @ApiProperty({ enum: ['creator', 'viewer'] })
+  group: "creator" | "viewer";
 }

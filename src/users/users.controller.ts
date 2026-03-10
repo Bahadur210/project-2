@@ -4,13 +4,18 @@ import { CreateUserDto } from './dto/user.dto';
 import { ApiQuery } from '@nestjs/swagger';
 import { Jwtauthguard } from '../auth/jwt-auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { OptionalJwtAuthGuard } from 'src/auth/optional-jwt.guard';
+
+
 
 
 
 @ApiBearerAuth()
 @Controller('users')
 export class UsersController {
-    constructor(private readonly usersService: UsersService) {}
+    constructor(
+        private readonly usersService: UsersService
+    ) {}
 
     @ApiQuery({ name: 'role', required: false })
     @UseGuards(Jwtauthguard)
@@ -24,20 +29,28 @@ export class UsersController {
     findOne(@Param('id') id: string) {
         return this.usersService.findOne(Number(id));
     }
-
-
+    
+    
+    @UseGuards(OptionalJwtAuthGuard)
     @Post()
-    async create(@Body() createUserDto: CreateUserDto, @Req() req?: Request) {
-    const requester = req?.['user']; 
+    async create(@Body() createUserDto: CreateUserDto, @Req() req: Request) {
+
+    const requester = req['user'];
 
     if (createUserDto.role === 'admin') {
-      if (!requester || requester.role !== 'admin') {
-        throw new ForbiddenException('You cannot create admin users');
-      }
+
+    if (!requester) {
+      throw new ForbiddenException('Login required to create admin');
     }
 
-    return this.usersService.create(createUserDto);
+    if (requester.role !== 'admin') {
+      throw new ForbiddenException('Only admins can create admin users');
+    }
+
   }
+
+  return this.usersService.create(createUserDto);
+}
 
     @UseGuards(Jwtauthguard)
     @Patch(':id')

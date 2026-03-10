@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { UserGroup } from 'src/user-group/user-group.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -19,4 +20,7 @@ export class User {
 
   @Column()
   password: string;
+
+  @ManyToOne(() => UserGroup, (group) => group.users, { eager: true })
+  group: UserGroup;
 }
