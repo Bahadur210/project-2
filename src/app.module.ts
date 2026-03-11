@@ -5,6 +5,7 @@ import { User } from './users/users.entity';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { UserGroup } from './user-group/user-group.entity';
+import { UserGroupModule } from './user-group/user-group.module';
 
 @Module({
   imports: [ 
@@ -20,7 +21,7 @@ import { UserGroup } from './user-group/user-group.entity';
       synchronize: true,
       entities: [User, UserGroup],
     }),
-    UsersModule, AuthModule,
+    UsersModule, AuthModule, UserGroupModule,
   ],
 })
 export class AppModule {}
